@@ -29,7 +29,7 @@ def final_video(number_of_clips, final_images):
         height=H).crop(x1=1166.6, y1=0, x2=2246.6, y2=1920))
     audio_clips = []
     silence = AudioClip(make_frame=lambda t: 0, duration=0.5, fps=30)
-    for i in range(0, number_of_clips):
+    for i in range(number_of_clips):
         audio_clips.append(AudioFileClip(f"mp3/{i}.mp3"))
         length = length + AudioFileClip(f"mp3/{i}.mp3").duration
         audio_clips.append(silence)
@@ -44,8 +44,7 @@ def final_video(number_of_clips, final_images):
     audio.write_audiofile("clip_audio.mp3", 44100, )
     audio.close
 
-    image_clips = []
-    print(f"Appending title.png")
+    print("Appending title.png")
 
     firstimg = Image.open(f"png/{final_images[0]}.jpg")
     nsize: list = list(firstimg.size)
@@ -67,16 +66,16 @@ def final_video(number_of_clips, final_images):
     img.save("png/title.png")
     img.close()
     firstimg.close()
-    image_clips.append(
-        ImageClip(f"png/title.png")
-        .set_duration(audio_clips[0].duration+0.5)
+    image_clips = [
+        ImageClip("png/title.png")
+        .set_duration(audio_clips[0].duration + 0.5)
         .set_position("center")
         .resize(width=W - 75)
-    )
+    ]
     del final_images[0]
     print(final_images)
     k: int = 2
-    for i in range(0, number_of_clips-1):
+    for i in range(number_of_clips-1):
         if os.path.exists(f"png/{final_images[i]}.jpg") and not os.path.exists(f"png/{final_images[i]}.png"):
             im = Image.open(f"png/{final_images[i]}.jpg")
             im.save(f"png/{final_images[i]}.png")

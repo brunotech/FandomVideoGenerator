@@ -22,19 +22,17 @@ def text_to_mp3():
     for i in range(len(fanobject_object['body'])):
         if n-1 < i+1 or length > int(os.getenv("LENGHT")):
             break
-        else:
-            print(
-                f"Printing {i}/{range(len(fanobject_object['body']))}, which is {fanobject_object['body'][i]}")
-            Path("mp3").mkdir(parents=True, exist_ok=True)
-            url = 'https://streamlabs.com/polly/speak'
-            body = {'voice': 'Matthew', 'text': fanobject_object["body"][i]}
-            response = requests.post(url, data=body)
-            voice_data = requests.get(response.json()['speak_url'])
-            f = open("mp3/{}.mp3".format(i), "wb")
+        print(
+            f"Printing {i}/{range(len(fanobject_object['body']))}, which is {fanobject_object['body'][i]}")
+        Path("mp3").mkdir(parents=True, exist_ok=True)
+        url = 'https://streamlabs.com/polly/speak'
+        body = {'voice': 'Matthew', 'text': fanobject_object["body"][i]}
+        response = requests.post(url, data=body)
+        voice_data = requests.get(response.json()['speak_url'])
+        with open(f"mp3/{i}.mp3", "wb") as f:
             f.write(voice_data.content)
             if length <= int(os.getenv("LENGHT")):
-                length += MP3("mp3/{}.mp3".format(i)).info.length
-            f.close()
+                length += MP3(f"mp3/{i}.mp3").info.length
     length = length + i*0.5
 
     n -= 1

@@ -21,7 +21,10 @@ def download_background():
         f = open("audio.txt", "x")
         f.close()
     with open("background.txt", "r+") as f:
-        if not os.getenv("BACKGROUND_LINK") in f.read() or not Path("background.mp4").is_file():
+        if (
+            os.getenv("BACKGROUND_LINK") not in f.read()
+            or not Path("background.mp4").is_file()
+        ):
             YouTube(os.getenv("BACKGROUND_LINK")).streams.filter(
                 res="720p").first().download(filename="background.mp4")
             f.seek(0)
@@ -29,7 +32,10 @@ def download_background():
             f.write(os.getenv("BACKGROUND_LINK"))
             f.close()
     with open("audio.txt", "r+") as f:
-        if not os.getenv("AUDIO_LINK") in f.read() or not Path("audio.mp3").is_file():
+        if (
+            os.getenv("AUDIO_LINK") not in f.read()
+            or not Path("audio.mp3").is_file()
+        ):
             YouTube(os.getenv("AUDIO_LINK")).streams.filter(
                 only_audio=True).first().download(filename="audio.mp3")
             f.seek(0)

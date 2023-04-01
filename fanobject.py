@@ -23,7 +23,7 @@ def get_fanobject():
         print(f"{i}: {fanobject_body_split[i]}")
     unnecesary = input(
         "Please provide the number of the unnecesary lines in the beginning: ")
-    if not unnecesary == "":
+    if unnecesary != "":
         unnecesary = unnecesary.split(",")
         unnecesary = [int(x) for x in unnecesary]
         for i in range(len(unnecesary)):
@@ -31,9 +31,9 @@ def get_fanobject():
             unnecesary = [x-1 for x in unnecesary]
     j = " ".join(j)
     j = j.split('. ')
-    del j[len(j)-1]
+    del j[-1]
 
-    if not os.getenv("INTRO") == "":
+    if os.getenv("INTRO") != "":
         j.insert(0, os.getenv("INTRO"))
     for i in range(len(j)):
         print(f"{i}: {j[i]}")
@@ -67,7 +67,7 @@ def get_pictures():
         link = links.get("src")
         if type(link) is str and not link.startswith("data"):
             v: int = link.find("revision")
-            link = link[0:v]
+            link = link[:v]
             try:
                 images.index(link)
                 continue
@@ -78,7 +78,7 @@ def get_pictures():
         link = links.get("data-src")
         if type(link) is str and not link.startswith("data"):
             v: int = link.find("revision")
-            link = link[0:v]
+            link = link[:v]
             try:
                 images.index(link)
                 continue
@@ -89,23 +89,23 @@ def get_pictures():
     for f in os.listdir(dir):
         os.remove(os.path.join(dir, f))
     n = 0
-    for imgs in range(len(images)):
-        if images[imgs]:
-            response = requests.get(images[imgs])
+    for image in images:
+        if image:
+            response = requests.get(image)
             if response.status_code:
-                fp = open(f"png/{n}.jpg", "wb")
-                fp.write(response.content)
-                fp.close()
+                with open(f"png/{n}.jpg", "wb") as fp:
+                    fp.write(response.content)
                 n += 1
 
     path = "png"
     path = os.path.realpath(path)
     webbrowser.open(path)
     chosen_pictures = input(
-        f"From the newly opened window, please choose the pictures you would like to use in the video and write them here in order, comma separated (e.g.: 0,3,4,6): ")
+        "From the newly opened window, please choose the pictures you would like to use in the video and write them here in order, comma separated (e.g.: 0,3,4,6): "
+    )
     chosen_pictures = chosen_pictures.split(",")
-    final_images = []
-    for i in range(len(chosen_pictures)):
-        final_images.append(images[int(chosen_pictures[i])])
+    final_images = [
+        images[int(chosen_pictures[i])] for i in range(len(chosen_pictures))
+    ]
     n = len(chosen_pictures)
     return n, chosen_pictures
